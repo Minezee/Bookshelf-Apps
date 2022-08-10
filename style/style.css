@@ -252,3 +252,42 @@ p {
         margin-bottom: 5px;
     }
 }
+
+@media screen and (max-width: 365px) {
+
+    .search_section>form {
+        padding: 5px;
+        width: 100%;
+        display: flex;
+        grid-template-columns: auto 1fr 0.5fr;
+        grid-gap: 10px;
+        align-content: space-around;
+        flex-wrap: nowrap;
+    }    
+
+    .book_shelf > h2{
+        font-size: 22px;
+    }
+
+    .search_section>form>button {
+        height: 25px;
+    }
+
+    .search_section>form>label{
+        justify-content: center;
+    }
+
+    .book_shelf>.book_list>.book_item>.action>.green {
+        background-color: darkgreen;
+        color: white;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .book_shelf>.book_list>.book_item>.action>.red {
+        background-color: darkred;
+    color: white;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+}

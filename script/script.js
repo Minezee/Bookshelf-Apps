@@ -54,7 +54,11 @@ function addBookToComplete(bookId) {
     targetBook.isComplete = true;
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
-    showAlert('Buku ' + targetBook.title + ' berhasil dipindahkan ke tempat selesai dibaca');
+    swal({
+        title: 'Buku ' + targetBook.title + ' berhasil dipindahkan ke tempat selesai dibaca',
+        icon: "success",
+    });
+    //showAlert('Buku ' + targetBook.title + ' berhasil dipindahkan ke tempat selesai dibaca');
 }
 
 function returnBookToUnfinished(bookId) {
@@ -65,7 +69,11 @@ function returnBookToUnfinished(bookId) {
     targetBook.isComplete = false;
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
-    showAlert('Buku ' + targetBook.title + ' berhasil dikembalikan ke tempat belum dibaca');
+    swal({
+        title: 'Buku ' + targetBook.title + ' berhasil dikembalikan ke tempat belum dibaca',
+        icon: "success",
+    });
+    //showAlert('Buku ' + targetBook.title + ' berhasil dikembalikan ke tempat belum dibaca');
 }
 
 function removeBook(bookId) {
@@ -75,7 +83,11 @@ function removeBook(bookId) {
     if (targetBook === -1) return;
 
     bookshelf.splice(targetBook, 1);
-    showAlert('Buku ' + book.title + ' berhasil dihapus');
+    //showAlert('Buku ' + book.title + ' berhasil dihapus');
+    swal({
+        title: "Buku " + book.title + " berhasil dihapus",
+        icon: "success",
+    });
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
 }
@@ -136,6 +148,7 @@ function searchBook(bookTitle) {
     for (let item of findTitle) {
         const title = item.innerText.toUpperCase();
         if (title.includes(bookTitle)) {
+            console.log('tes')
             item.parentElement.style.display = 'block';
         } else {
             item.parentElement.style.display = 'none';
@@ -174,28 +187,16 @@ function loadDataFromStorage() {
     document.dispatchEvent(new Event(RENDER_EVENT));
 }
 
-const customAlert = document.getElementById("alert");
-const sticky = customAlert.offsetTop;
-
-window.addEventListener('scroll', function () {
-    if (window.pageYOffset >= sticky) {
-        customAlert.classList.add("sticky")
-        customAlert.classList.add('hidden');
-    } else {
-        customAlert.classList.remove("sticky");
-    }
-});
-
-function showAlert(textAlert) {
-    const displayAlert = document.querySelector('#alert > p');
-    displayAlert.innerText = textAlert;
-    customAlert.style.display = 'block'
-    customAlert.classList.remove('hidden')
-    customAlert.classList.add('show-alert');
-    setTimeout(function () {
-        customAlert.classList.remove('show-alert');
-    }, 3000);
-}
+// function showAlert(textAlert) {
+//     const displayAlert = document.querySelector('#alert > p');
+//     displayAlert.innerText = textAlert;
+//     customAlert.style.display = 'block'
+//     customAlert.classList.remove('hidden')
+//     customAlert.classList.add('show-alert');
+//     setTimeout(function () {
+//         customAlert.classList.remove('show-alert');
+//     }, 3000);
+// }
 
 document.addEventListener('DOMContentLoaded', function () {
     const submitForm = document.getElementById('inputBook');
@@ -208,7 +209,11 @@ document.addEventListener('DOMContentLoaded', function () {
     submitForm.addEventListener('submit', function (event) {
         event.preventDefault();
         addBook();
-        showAlert('Buku baru berhasil ditambah');
+        swal({
+            title: "Buku berhasil ditambahkan",
+            icon: "success",
+        });
+        //showAlert('Buku baru berhasil ditambah');
     });
 
     searchForm.addEventListener('submit', function (event) {
@@ -216,6 +221,29 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         searchBook(searchValue);
     });
+});
+
+// const customAlert = document.getElementById("alert");
+// const sticky = customAlert.offsetTop;
+
+// window.addEventListener('scroll', function () {
+//     if (window.pageYOffset >= sticky) {
+//         customAlert.classList.add("sticky")
+//         customAlert.classList.add('hidden');
+//     } else {
+//         customAlert.classList.remove("sticky");
+//     }
+// });
+
+const submitButtonText = document.querySelector('#bookSubmit > span');
+const checkbox = document.getElementById('inputBookIsComplete');
+
+checkbox.addEventListener('change', function () {
+    if (this.checked) {
+        submitButtonText.innerText = 'Selesai dibaca'
+    } else {
+        submitButtonText.innerText = 'Belum selesai dibaca'
+    }
 });
 
 document.addEventListener(RENDER_EVENT, function () {
