@@ -54,9 +54,16 @@ function addBookToComplete(bookId) {
     targetBook.isComplete = true;
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
-    swal({
+    Swal.fire({
         title: 'Buku ' + targetBook.title + ' berhasil dipindahkan ke tempat selesai dibaca',
         icon: "success",
+        customClass : 'swal-wide',
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        }
     });
     //showAlert('Buku ' + targetBook.title + ' berhasil dipindahkan ke tempat selesai dibaca');
 }
@@ -69,9 +76,16 @@ function returnBookToUnfinished(bookId) {
     targetBook.isComplete = false;
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
-    swal({
+    Swal.fire({
         title: 'Buku ' + targetBook.title + ' berhasil dikembalikan ke tempat belum dibaca',
         icon: "success",
+        customClass : 'swal-wide',
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        }
     });
     //showAlert('Buku ' + targetBook.title + ' berhasil dikembalikan ke tempat belum dibaca');
 }
@@ -84,9 +98,16 @@ function removeBook(bookId) {
 
     bookshelf.splice(targetBook, 1);
     //showAlert('Buku ' + book.title + ' berhasil dihapus');
-    swal({
+    Swal.fire({
         title: "Buku " + book.title + " berhasil dihapus",
         icon: "success",
+        customClass : 'swal-wide',
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        }
     });
     document.dispatchEvent(new Event(RENDER_EVENT));
     saveData();
@@ -110,13 +131,17 @@ function createBookshelf(bookObject) {
         removeBook(bookObject.id);
     });
 
+    const dataContainer = document.createElement('div');
+
+
     const actionBar = document.createElement('div');
     actionBar.classList.add('action');
 
     const itemContainer = document.createElement('article')
     itemContainer.classList.add('book_item');
-    itemContainer.setAttribute('id', `book-name-${bookObject.title}`)
-    itemContainer.append(bookTitle, bookAuthor, bookYear, actionBar);
+    itemContainer.setAttribute('id', `book-name-${bookObject.title}`);
+    dataContainer.append(bookTitle, bookAuthor, bookYear);
+    itemContainer.append(dataContainer, actionBar);
 
     if (!bookObject.isComplete) {
         const finishButton = document.createElement('button');
@@ -144,14 +169,13 @@ function createBookshelf(bookObject) {
 }
 
 function searchBook(bookTitle) {
-    const findTitle = document.querySelectorAll('.book_item > h3')
+    const findTitle = document.querySelectorAll('.book_item > div > h3')
     for (let item of findTitle) {
         const title = item.innerText.toUpperCase();
         if (title.includes(bookTitle)) {
-            console.log('tes')
-            item.parentElement.style.display = 'block';
+            item.closest(".book_item").style.display = 'flex';
         } else {
-            item.parentElement.style.display = 'none';
+            item.closest(".book_item").style.display = 'none';
         }
     }
 }
@@ -187,6 +211,17 @@ function loadDataFromStorage() {
     document.dispatchEvent(new Event(RENDER_EVENT));
 }
 
+function checkDuplicateBook() {
+    const allBookTitle = document.querySelectorAll('.book_item > div > h3');
+    const bookTitleValue = document.getElementById('inputBookTitle').value.toUpperCase();
+    for (let item of allBookTitle) {
+        const title = item.innerText.toUpperCase();
+        if (bookTitleValue == title) {
+            return true;
+        }
+    }
+}
+
 // function showAlert(textAlert) {
 //     const displayAlert = document.querySelector('#alert > p');
 //     displayAlert.innerText = textAlert;
@@ -207,12 +242,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     submitForm.addEventListener('submit', function (event) {
+        if (checkDuplicateBook()) {
+            Swal.fire({
+                title: "Buku ini sudah ditambahkan",
+                icon: "error",
+                customClass : 'swal-wide',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        } else {
+            addBook();
+            Swal.fire({
+                title: "Buku berhasil ditambahkan",
+                icon: "success",
+                customClass : 'swal-wide',
+                customClass : 'swal-wide',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        }
+
         event.preventDefault();
-        addBook();
-        swal({
-            title: "Buku berhasil ditambahkan",
-            icon: "success",
-        });
+
+        const bookTitleInput = document.getElementById('inputBookTitle');
+        const bookAuthorInput = document.getElementById('inputBookAuthor');
+        const bookYearInput = document.getElementById('inputBookYear');
+
+        bookTitleInput.value = '';
+        bookAuthorInput.value = '';
+        bookYearInput.value = '';
         //showAlert('Buku baru berhasil ditambah');
     });
 
